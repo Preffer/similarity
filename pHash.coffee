@@ -1,4 +1,5 @@
 'use strict'
+
 jimp = require 'jimp'
 dct = require './dct'
 zigzag = require './zigzag'
@@ -14,9 +15,9 @@ module.exports.pHash = (path, scale, length, callback)->
 
 		callback(null, imageHash)
 
-module.exports.distanceSquared = (x, y) ->
-	diff = 0
+module.exports.distance = (x, y) ->
+	sum = 0
 	length = Math.min(x.length, y.length)
 	for i in [0...length]
-		diff += (x[i] - y[i]) ** 2
-	return diff
+		sum += (x[i] - y[i]) ** 2
+	return Math.sqrt(sum)

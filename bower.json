@@ -1,0 +1,14 @@
+{
+	"name": "similarity",
+	"version": "0.0.1",
+	"dependencies": {
+		"bootstrap": "3.x",
+		"seiyria-bootstrap-slider": "5.x",
+		"blueimp-tmpl": "2.x"
+	},
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"components"
+	]
+}
