@@ -23,4 +23,5 @@ module.exports = (app) ->
 			cleanup()
 
 		cleanup = ->
-			fs.unlink(file.path) for file in req.files
+			for name, file of req.files
+				fs.unlink(file.path)
