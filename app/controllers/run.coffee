@@ -13,9 +13,9 @@ module.exports = (app) ->
 					res.json(error)
 					cleanup()
 				else
-					response = {hash: Array.prototype.slice.call(hash)}
-					if req.body.target
-						response.distance = pHash.distance(JSON.parse(req.body.target), hash)
+					response =
+						'hash': Array.prototype.slice.call(hash)
+					response.similarity = pHash.similarity(JSON.parse(req.body.target), hash) if req.body.target
 					res.json(response)
 					cleanup()
 		else

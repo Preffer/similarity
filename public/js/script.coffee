@@ -1,23 +1,18 @@
 'use strict'
 
 $ ->
-	'''
 	sliderConfig =
-		'slice':
-			'control': '#slice'
-			'value': '#sliceValue'
-		'shift':
-			'control': '#shift'
-			'value': '#shiftValue'
-		'suffix':
-			'control': '#suffix'
-			'value': '#suffixValue'
+		'scale':
+			'control': '#scale'
+			'value': '#scaleValue'
+		'length':
+			'control': '#length'
+			'value': '#lengthValue'
 
 	$.each sliderConfig, (name, config)->
 		if $(config.control).length
 			$(config.control).slider().on 'slide', (slider)->
 				$(config.value).text(slider.value)
-	'''
 
 	$('.dropable').on 'dragenter', (event)->
 		$(this).addClass 'dragover'
@@ -38,21 +33,25 @@ $ ->
 		$('#target input[type="file"]').click()
 
 	targetHash = ''
+	indexCount = 0
 	$('#target input[type="file"]').change ->
 		if @files.length
 			preview(@files[0], '#target img')
 
 			form = new FormData()
-			form.append('scale', 64)
-			form.append('length', 64)
+			$.each sliderConfig, (name, config)->
+				if $(config.control).length
+					form.append(name, $(config.control).slider('getValue'))
 			form.append('file', @files[0])
 
 			xhr = new XMLHttpRequest()
 			xhr.open('post', '/run')
 
 			xhr.onload = (event)->
-				console.log(this, event)
 				targetHash = JSON.stringify(JSON.parse(@responseText).hash)
+				$('#add-image').fadeIn()
+				$('#case .list-group-item').not("#header").remove()
+				indexCount = 0
 			xhr.onerror = (event)->
 				console.error(this, event)
 			xhr.send(form)
@@ -61,15 +60,17 @@ $ ->
 		$('#add-file').click()
 
 	$('#add-file').change ->
-		$.each @files, (index, file)->
+		$.each @files, (_, file)->
+			index = indexCount++
 			rowData =
 				'id': "case#{index}"
 			$('#case').append(tmpl('tmpl-row', rowData))
 			preview(file, "#case#{index} img")
 
 			form = new FormData()
-			form.append('scale', 64)
-			form.append('length', 64)
+			$.each sliderConfig, (name, config)->
+				if $(config.control).length
+					form.append(name, $(config.control).slider('getValue'))
 			form.append('target', targetHash)
 			form.append('file', file)
 
@@ -79,10 +80,20 @@ $ ->
 			xhr.onload = (event)->
 				console.log(this, event)
 				response = JSON.parse(@responseText)
-				$("#case#{index} p.hash").text(response.hash[0])
-				$("#case#{index} p.distance").text(response.distance)
+				percentage = Math.round(response.similarity * 100)
+				$("#case#{index} .below-image").html(file.name)
+				$("#case#{index} .similarity").text("#{percentage}%")
+				$("#case#{index} .progress-bar-success").css('width', "#{percentage}%")
+				console.log(index, $("#case#{index} .part1").height())
+				$("#case#{index} .part2").css('margin-top', "#{($("#case#{index} .part1").height() - $("#case#{index} .part2").height()) / 2}px")
 			xhr.onerror = (event)->
 				console.error(this, event)
+
+			xhr.upload.addEventListener 'progress', (event)->
+				if event.lengthComputable
+					percentage = Math.round((event.loaded / event.total * 100))
+					$("#case#{index} .progress-bar-primary").css('width', "#{percentage}%")
+
 			xhr.send(form)
 
 	'''

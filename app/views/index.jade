@@ -20,7 +20,7 @@ html
 
 		.container
 			.jumbotron
-				h2 DCT based watermark
+				h2 DCT based image similarity
 				ul
 					li Encode low frequency signal of watermark image into high frequency portion of color image
 					li If the image size dis-match, the watermark image will be stretched to match the color image
@@ -30,10 +30,19 @@ html
 
 			.row
 				.col-sm-6.float-none.center-block
-					.thumbnail#target.dropable
+					.thumbnail.text-center#target.dropable
 						img.pointer
 						.caption
-							input.center-block(type='file' name='color')
+							p
+								label Scale:
+								span.sliderValue#scaleValue 64
+								input#scale(data-slider-min='1' data-slider-max='512' data-slider-step='1' data-slider-value='64')
+							p
+								label Length:
+								span.sliderValue#lengthValue 64
+								input#length(data-slider-min='1' data-slider-max='512' data-slider-step='1' data-slider-value='64')
+
+							input.center-block(type='file' name='target')
 							h3.text-center Click to upload your target image
 
 			.row
@@ -44,23 +53,34 @@ html
 					input.hidden#add-file(type='file' multiple)
 
 			.list-group#case
-
+				.list-group-item.row#header
+					.col-md-1
+					.col-xs-6.col-md-4.text-center
+						h4 Image
+					.col-md-2
+					.col-xs-6.col-md-4.text-center
+						h4 Similarity
+					.col-md-1
 		footer.text-center
 			p Design and code by &nbsp;
 				a(href='mailto:PillowSky.qq.com') PillowSky@qq.com
-			p Powered by Node.js / Express / Jimp / Async
+			p Powered by Node.js / Express / Jimp
 
 		script(type='text/x-tmpl' id='tmpl-row')
 			.list-group-item.row(id='{%=o.id%}')
-				.col-xs-2
+				.col-md-1
+				.col-xs-6.col-md-4.part1
 					img.img-responsive(src='{%=o.src%}')
-				.col-xs-4
+					br
+					.below-image
+						.progress.metable
+							.progress-bar.progress-bar-primary(role='progressbar' style='width: 0%')
+				.col-md-2
+				.col-xs-6.col-md-4.part2
+					h1.similarity.text-center {%=o.similarity%}
 					.progress
-						.progress-bar(role='progressbar' style='width: 0%')
-				.col-xs-2
-					p.hash {%=o.hash%}
-				.col-xs-2
-					p.distance {%=o.distance%}
+						.progress-bar.progress-bar-success(role='progressbar' style='width: 0%')
+				.col-md-1
 
 		script(src='/components/jquery/dist/jquery.min.js')
 		script(src='/components/bootstrap/dist/js/bootstrap.min.js')

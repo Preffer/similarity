@@ -15,14 +15,11 @@
 		"morgan": "^1.x",
 		"cookie-parser": "1.x",
 		"body-parser": "1.x",
-		"debug": "2.x",
 		"compression": "1.x",
 		"glob": "5.x",
 		"ehp": "1.x",
 		"connect-multiparty": "2.x",
-		"jimp": "x",
-		"async": "1.x",
-		"tmp": "x"
+		"jimp": "x"
 	},
 	"devDependencies": {
 		"grunt": "x",

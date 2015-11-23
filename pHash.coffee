@@ -15,9 +15,9 @@ module.exports.pHash = (path, scale, length, callback)->
 
 		callback(null, imageHash)
 
-module.exports.distance = (x, y) ->
+module.exports.similarity = (x, y) ->
 	sum = 0
 	length = Math.min(x.length, y.length)
 	for i in [0...length]
 		sum += (x[i] - y[i]) ** 2
-	return Math.sqrt(sum)
+	return Math.exp(-Math.sqrt(sum) / Math.pow(length, 3))
