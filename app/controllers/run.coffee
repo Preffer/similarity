@@ -19,7 +19,7 @@ module.exports = (app) ->
 					res.json(response)
 					cleanup()
 		else
-			res.status(500).end()
+			res.status(403).end()
 			cleanup()
 
 		cleanup = ->

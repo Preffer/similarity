@@ -20,17 +20,17 @@ html
 
 		.container
 			.jumbotron
-				h2 DCT based image similarity
+				h2 DCT coefficient distance based image similarity
 				ul
-					li Encode low frequency signal of watermark image into high frequency portion of color image
-					li If the image size dis-match, the watermark image will be stretched to match the color image
-					li You must set the following parameters to be same between watermarking and detection
-					li <strong>Slice:</strong> The portion of color image used to carry watermark image
-					li <strong>Shift:</strong> Bits shifted before encode watermark signal into color signal
+					li Resize and greyscale image, then take the first few coefficients as the image hash
+					li Similarity are calculated based on distance, with exponent normalization
+					li The following parameters influence both accuracy and speed of algorithm performance
+					li <strong>Scale:</strong> Scale of the image to perform DCT transform
+					li <strong>Length:</strong> Length of DCT coefficients used
 
 			.row
 				.col-sm-6.float-none.center-block
-					.thumbnail.text-center#target.dropable
+					.thumbnail.text-center.dropable#target
 						img.pointer
 						.caption
 							p
@@ -45,14 +45,13 @@ html
 							input.center-block(type='file' name='target')
 							h3.text-center Click to upload your target image
 
-			.row
-				.col-sm-2.float-none.center-block
-					button.btn.btn-success#add-image
-						i.glyphicon.glyphicon-plus
-						span &nbsp;Add image
-					input.hidden#add-file(type='file' multiple)
+			.text-center.display-none#add
+				button.btn.btn-success
+					i.glyphicon.glyphicon-plus
+					span &nbsp;Add comparison
+				input.hidden(type='file' name='case' multiple)
 
-			.list-group#case
+			.list-group.display-none#case
 				.list-group-item.row#header
 					.col-md-1
 					.col-xs-6.col-md-4.text-center
@@ -61,6 +60,7 @@ html
 					.col-xs-6.col-md-4.text-center
 						h4 Similarity
 					.col-md-1
+
 		footer.text-center
 			p Design and code by &nbsp;
 				a(href='mailto:PillowSky.qq.com') PillowSky@qq.com
@@ -69,15 +69,14 @@ html
 		script(type='text/x-tmpl' id='tmpl-row')
 			.list-group-item.row(id='{%=o.id%}')
 				.col-md-1
-				.col-xs-6.col-md-4.part1
+				.col-xs-6.col-md-4.image
 					img.img-responsive(src='{%=o.src%}')
-					br
-					.below-image
-						.progress.metable
+					.caption.text-center
+						.progress
 							.progress-bar.progress-bar-primary(role='progressbar' style='width: 0%')
 				.col-md-2
-				.col-xs-6.col-md-4.part2
-					h1.similarity.text-center {%=o.similarity%}
+				.col-xs-6.col-md-4.similarity
+					p.text-center.percentage {%=o.similarity%}
 					.progress
 						.progress-bar.progress-bar-success(role='progressbar' style='width: 0%')
 				.col-md-1
