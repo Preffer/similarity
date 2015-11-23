@@ -1,14 +1,28 @@
+'use strict'
+
 pHash = require './pHash'
 
-hashes = new Array(10)
-similarity = new Array(9)
+if process.argv.length < 6
+	console.log('Usage: coffee cmd.coffee <scale> <length> <target image> <case images...>')
+	console.log('Example: coffee cmd.coffee 64 64 target.png case/*')
+	process.exit(-1)
+else
+	scale = parseInt(process.argv[2])
+	length = parseInt(process.argv[3])
+	targetPath = process.argv[4]
+	targetHash = null
 
-done = 0
+	console.log("Target Image: #{targetPath}")
+	console.log("Similarities:")
 
-[0...10].forEach (i)->
-	pHash.pHash "10images/#{i}.jpg", 64, 64, (error, hash)->
-		hashes[i] = hash
-		if ++done == 10
-			[1...10].forEach (i)->
-				similarity[i - 1] = pHash.distanceSquared(hashes[0], hashes[i])
-			console.log(similarity)
+	pHash.pHash targetPath, scale, length, (error, hash)->
+		if error
+			console.error(error)
+		else
+			targetHash = hash
+			process.argv.slice(5).forEach (path)->
+				pHash.pHash path, scale, length, (error, hash)->
+					if error
+						console.error(error)
+					else
+						console.log("#{path}: #{pHash.similarity(targetHash, hash)}")
